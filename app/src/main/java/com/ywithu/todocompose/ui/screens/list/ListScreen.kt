@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.ywithu.todocompose.R
 import com.ywithu.todocompose.ui.theme.fabBackgroundColor
+import com.ywithu.todocompose.ui.util.Action
 import com.ywithu.todocompose.ui.util.SearchAppBarState
 import com.ywithu.todocompose.ui.viewmodels.SharedViewModel
 
@@ -24,9 +25,14 @@ fun ListScreen(
         sharedViewModel.getAllTasks()
     }
 
+    val action : Action by sharedViewModel.action
+
     val allTasks by sharedViewModel.allTask.collectAsState()
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTexState
+
+    sharedViewModel.handleDatabaseActions(action = action)
+
     Scaffold(
         topBar = {
             ListAppBar(
