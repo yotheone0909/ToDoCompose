@@ -5,6 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ywithu.todocompose.data.models.Priority
 import com.ywithu.todocompose.data.models.ToDoTask
 import com.ywithu.todocompose.data.repositories.ToDoRepository
@@ -38,10 +39,30 @@ class SharedViewModel @Inject constructor(
         mutableStateOf(SearchAppBarState.CLOSED)
     val searchTexState: MutableState<String> = mutableStateOf("")
 
+    private val _searchedTasks =
+        MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
+    val searchedTasks: StateFlow<RequestState<List<ToDoTask>>> = _searchedTasks
+
     private val _allTask =
         MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
-
     val allTask: StateFlow<RequestState<List<ToDoTask>>> = _allTask
+
+    fun searchDatabase(searchQuery: String) {
+        _searchedTasks.value = RequestState.Loading
+        viewModelScope.launch {
+            try {
+                viewModelScope.launch {
+                    repository.searchDatabase(searchQuery = "%$searchQuery%")
+                        .collect { searchedTasks ->
+                            _searchedTasks.value = RequestState.Success(searchedTasks)
+                        }
+                }
+            } catch (e: Exception) {
+                _allTask.value = RequestState.Error(e)
+            }
+        }
+        searchAppBarState.value = SearchAppBarState.TRIGGERED
+    }
 
     fun getAllTasks() {
         Log.d("ListScreen", "getAllTasks")
@@ -78,6 +99,31 @@ class SharedViewModel @Inject constructor(
             )
             repository.addTask(toDoTask = todoTask)
         }
+        searchAppBarState.value = SearchAppBarState.CLOSED
+    }
+
+    private fun updateTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val todoTask = ToDoTask(
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            repository.updateTask(todoTask)
+        }
+    }
+
+    private fun deleteTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val todoTask = ToDoTask(
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            repository.deleteTask(toDoTask = todoTask)
+        }
     }
 
     fun handleDatabaseActions(action: Action) {
@@ -86,16 +132,16 @@ class SharedViewModel @Inject constructor(
                 addTask()
             }
             Action.UPDATE -> {
-
+                updateTask()
             }
             Action.DELETE -> {
-
+                deleteTask()
             }
             Action.DELETE_ALL -> {
 
             }
             Action.UNDO -> {
-
+                addTask()
             }
             else -> {
 
@@ -105,6 +151,7 @@ class SharedViewModel @Inject constructor(
     }
 
     fun updateTaskFields(selectedTodoTask: ToDoTask?) {
+        Log.d("updateTaskFields", selectedTodoTask.toString())
         if (selectedTodoTask != null) {
             id.value = selectedTodoTask.id
             title.value = selectedTodoTask.title
