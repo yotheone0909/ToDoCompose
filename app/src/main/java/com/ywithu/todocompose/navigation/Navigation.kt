@@ -1,15 +1,18 @@
 package com.ywithu.todocompose.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
+import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.ywithu.todocompose.navigation.destinations.listComposable
+import com.ywithu.todocompose.navigation.destinations.splashComposable
 import com.ywithu.todocompose.navigation.destinations.taskComposable
-import com.ywithu.todocompose.ui.util.Constants.LIST_SCREEN
+import com.ywithu.todocompose.ui.util.Constants.SPLASH_SCREEN
 import com.ywithu.todocompose.ui.viewmodels.SharedViewModel
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun SetupNavigation(
@@ -21,14 +24,18 @@ fun SetupNavigation(
         Screens(navHostController = navHostController)
     }
 
-    NavHost(navController = navHostController, startDestination = LIST_SCREEN) {
+    AnimatedNavHost(navController = navHostController, startDestination = SPLASH_SCREEN) {
+        splashComposable(
+            navigateToTaskScreen = screen.splash
+        )
+
         listComposable(
-            navigateToTaskScreen = screen.task,
+            navigateToTaskScreen = screen.list,
             sharedViewModel = sharedViewModel
         )
 
         taskComposable(
-            navigateToListScreen = screen.list,
+            navigateToListScreen = screen.task,
             sharedViewModel = sharedViewModel
         )
     }

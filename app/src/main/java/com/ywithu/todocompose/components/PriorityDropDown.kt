@@ -44,7 +44,7 @@ fun PriorityDropDown(
 
     Row(
         modifier = Modifier
-            .fillMaxWidth(fraction = 0.94f)
+            .fillMaxWidth(fraction = 1f)
             .background(MaterialTheme.colors.background)
             .height(PRIORITY_DROP_DOWN_HEIGHT)
             .clickable { expanded = true }

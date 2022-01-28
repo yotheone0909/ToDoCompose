@@ -1,6 +1,7 @@
 package com.ywithu.todocompose.ui.screens.list
 
 import android.util.Log
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -14,6 +15,7 @@ import com.ywithu.todocompose.ui.util.SearchAppBarState
 import com.ywithu.todocompose.ui.viewmodels.SharedViewModel
 import kotlinx.coroutines.launch
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun ListScreen(
@@ -66,6 +68,10 @@ fun ListScreen(
                 highPriorityTasks = highPriorityTasks,
                 sortState = sortState,
                 searchAppBarState = searchAppBarState,
+                onSwipeToDelete = { action, task ->
+                    sharedViewModel.action.value = action
+                    sharedViewModel.updateTaskFields(selectedTodoTask = task)
+                },
                 navigateToTaskScreen = navigateToTaskScreen
             )
         },
