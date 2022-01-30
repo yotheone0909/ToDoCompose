@@ -1,6 +1,5 @@
 package com.ywithu.todocompose.navigation.destinations
 
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
@@ -9,8 +8,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.navArgument
+import com.google.accompanist.navigation.animation.composable
 import com.ywithu.todocompose.ui.screens.task.TaskScreen
 import com.ywithu.todocompose.ui.util.Action
 import com.ywithu.todocompose.ui.util.Constants

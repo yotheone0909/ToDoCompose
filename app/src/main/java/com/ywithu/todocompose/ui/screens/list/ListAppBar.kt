@@ -9,27 +9,22 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import com.ywithu.todocompose.R
-import com.ywithu.todocompose.data.models.Priority
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
+import com.ywithu.todocompose.R
 import com.ywithu.todocompose.components.DisplayAlertDialog
 import com.ywithu.todocompose.components.PriorityItem
+import com.ywithu.todocompose.data.models.Priority
 import com.ywithu.todocompose.ui.theme.*
 import com.ywithu.todocompose.ui.util.Action
 import com.ywithu.todocompose.ui.util.SearchAppBarState
-import com.ywithu.todocompose.ui.util.TrailingIconState
 import com.ywithu.todocompose.ui.viewmodels.SharedViewModel
 
 @Composable
@@ -45,7 +40,7 @@ fun ListAppBar(
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
                 },
                 onSortClicked = {
-                                sharedViewModel.persistSortingState(it)
+                    sharedViewModel.persistSortingState(it)
                 },
                 onDeleteAllConfirmed = {
                     sharedViewModel.action.value = Action.DELETE_ALL
@@ -152,26 +147,14 @@ fun SortAction(
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = { expanded = false }) {
-
-        DropdownMenuItem(onClick = {
-            expanded = false
-            onSortClicked(Priority.LOW)
-        }) {
-            PriorityItem(priority = Priority.LOW)
+        Priority.values().slice(setOf(0, 2, 3)).forEach { priority ->
+            DropdownMenuItem(onClick = {
+                expanded = false
+                onSortClicked(priority)
+            }) {
+                PriorityItem(priority = priority)
+            }
         }
-        DropdownMenuItem(onClick = {
-            expanded = false
-            onSortClicked(Priority.HIGH)
-        }) {
-            PriorityItem(priority = Priority.HIGH)
-        }
-        DropdownMenuItem(onClick = {
-            expanded = false
-            onSortClicked(Priority.NONE)
-        }) {
-            PriorityItem(priority = Priority.NONE)
-        }
-
     }
 }
 
@@ -212,9 +195,6 @@ fun SearchAppBar(
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit
 ) {
-    var trailingIconState by remember {
-        mutableStateOf(TrailingIconState.READY_TO_CLOSE)
-    }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -257,19 +237,10 @@ fun SearchAppBar(
             trailingIcon = {
                 IconButton(
                     onClick = {
-                        when (trailingIconState) {
-                            TrailingIconState.READY_TO_DELETE -> {
-                                onTextChange("")
-                                trailingIconState = TrailingIconState.READY_TO_CLOSE
-                            }
-                            TrailingIconState.READY_TO_CLOSE -> {
-                                if (text.isNotEmpty()) {
-                                    onTextChange("")
-                                } else {
-                                    onCloseClicked()
-                                    trailingIconState = TrailingIconState.READY_TO_DELETE
-                                }
-                            }
+                        if (text.isNotEmpty()) {
+                            onTextChange("")
+                        } else {
+                            onCloseClicked()
                         }
                     }
                 ) {

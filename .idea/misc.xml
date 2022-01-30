@@ -10,8 +10,11 @@
         <entry key="../../../../layout/compose-model-1643380108400.xml" value="0.24957770270270271" />
         <entry key="../../../../layout/compose-model-1643384558910.xml" value="0.25" />
         <entry key="../../../../layout/compose-model-1643384576990.xml" value="0.18171683389074694" />
+        <entry key="../../../../layout/compose-model-1643516070938.xml" value="0.15092592592592594" />
+        <entry key="../../../../layout/compose-model-1643516374519.xml" value="0.13640202702702703" />
+        <entry key="../../../../layout/compose-model-1643516492015.xml" value="0.15092592592592594" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>
